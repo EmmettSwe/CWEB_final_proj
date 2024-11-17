@@ -4,6 +4,7 @@ import { Request, Response } from "express"
 import { AppDataSource } from "./data-source"
 import { Routes } from "./routes"
 import { User } from "./entity/User"
+import {Recipe} from "./entity/Recipe";
 
 AppDataSource.initialize().then(async () => {
 
@@ -30,20 +31,16 @@ AppDataSource.initialize().then(async () => {
     // start express server
     app.listen(3000)
 
-    // insert new users for test
-    await AppDataSource.manager.save(
-        AppDataSource.manager.create(User, {
-            firstName: "Timber",
-            lastName: "Saw",
-            age: 27
-        })
-    )
 
-    await AppDataSource.manager.save(
-        AppDataSource.manager.create(User, {
-            firstName: "Phantom",
-            lastName: "Assassin",
-            age: 24
+     await AppDataSource.manager.save(
+        AppDataSource.manager.create(Recipe, {
+            title: "food1",
+            owner: 5,
+            uploadDate: new Date(),
+            calories: 24,
+            estimatedTime: 45,
+            ingredients: "Pork, Ramen, Food, yellow mushrooms",
+            steps: "Buy food, Clean food, Make food, Cook food, Eat food"
         })
     )
 
