@@ -31,18 +31,6 @@ AppDataSource.initialize().then(async () => {
     // start express server
     app.listen(3000)
 
-     await AppDataSource.manager.save(
-        AppDataSource.manager.create(Recipe, {
-            title: "food1",
-            owner: 5,
-            uploadDate: new Date(),
-            calories: 24,
-            estimatedTime: 45,
-            ingredients: "Pork, Ramen, Food, yellow mushrooms",
-            steps: "Buy food, Clean food, Make food, Cook food, Eat food"
-        })
-    )
-
     console.log("Express server has started on port 3000. Open http://localhost:3000/recipe to see results")
 
 }).catch(error => console.log(error))

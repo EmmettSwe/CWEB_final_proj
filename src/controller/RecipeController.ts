@@ -26,7 +26,7 @@ export class RecipeController {
 
     async save(request: Request, response: Response, next: NextFunction) {
         const { title, uploadDate, owner, calories, estimatedTime, ingredients, steps } = request.body;
-        const user = Object.assign(new Recipe(), {
+        const recipe = Object.assign(new Recipe(), {
             title,
             uploadDate,
             owner,
@@ -36,7 +36,7 @@ export class RecipeController {
             steps
         })
 
-        return this.recipeRepository.save(user)
+        return this.recipeRepository.save(recipe)
     }
 
     async remove(request: Request, response: Response, next: NextFunction) {
@@ -51,6 +51,11 @@ export class RecipeController {
         await this.recipeRepository.remove(recipeToRemove)
 
         return "recipe has been removed"
+    }
+    async update(req: Request, res: Response, next: NextFunction) {
+        const recipeToUpdate = await this.recipeRepository.preload(req.body);
+
+        return this.recipeRepository.save(recipeToUpdate);
     }
 
 }
