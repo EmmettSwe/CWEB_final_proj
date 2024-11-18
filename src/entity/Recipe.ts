@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn} from "typeorm"
 
 @Entity()
 export class Recipe {
@@ -6,26 +6,25 @@ export class Recipe {
     @PrimaryGeneratedColumn()
     recipeID: number
 
-    @Column()
+    @Column({nullable: false, })
     title: string
 
-    @Column()
-
+    @CreateDateColumn({nullable: false})
     uploadDate: Date
 
-    @Column()
+    @Column({nullable: false})
     owner: number
 
-    @Column()
+    @Column({nullable: true})
     calories: number
 
-    @Column()
+    @Column({nullable: true})
     estimatedTime: number
 
-    @Column()
+    @Column({nullable: false})
     ingredients: string
 
-    @Column()
+    @Column({nullable: false})
     steps: string
 
 }

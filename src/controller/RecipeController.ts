@@ -26,7 +26,6 @@ export class RecipeController {
 
     async save(request: Request, response: Response, next: NextFunction) {
         const { title, uploadDate, owner, calories, estimatedTime, ingredients, steps } = request.body;
-        console.log(request.body);
         const user = Object.assign(new Recipe(), {
             title,
             uploadDate,
@@ -46,7 +45,7 @@ export class RecipeController {
         let recipeToRemove = await this.recipeRepository.findOneBy({ recipeID })
 
         if (!recipeToRemove) {
-            return "this recipe not exist"
+            return "this recipe doesn't exist"
         }
 
         await this.recipeRepository.remove(recipeToRemove)
