@@ -1,6 +1,5 @@
 import { AppDataSource } from "../data-source"
 import { NextFunction, Request, Response } from "express"
-import { User } from "../entity/User"
 import {Recipe} from "../entity/Recipe";
 
 export class RecipeController {
@@ -26,10 +25,11 @@ export class RecipeController {
     }
 
     async save(request: Request, response: Response, next: NextFunction) {
-        const { title, owner, calories, estimatedTime, ingredients, steps } = request.body;
-
+        const { title, uploadDate, owner, calories, estimatedTime, ingredients, steps } = request.body;
+        console.log(request.body);
         const user = Object.assign(new Recipe(), {
             title,
+            uploadDate,
             owner,
             calories,
             estimatedTime,

@@ -3,8 +3,8 @@ import * as bodyParser from "body-parser"
 import { Request, Response } from "express"
 import { AppDataSource } from "./data-source"
 import { Routes } from "./routes"
-import { User } from "./entity/User"
 import {Recipe} from "./entity/Recipe";
+import {RecipeController} from "./controller/RecipeController";
 
 AppDataSource.initialize().then(async () => {
 
@@ -31,7 +31,6 @@ AppDataSource.initialize().then(async () => {
     // start express server
     app.listen(3000)
 
-
      await AppDataSource.manager.save(
         AppDataSource.manager.create(Recipe, {
             title: "food1",
@@ -44,6 +43,6 @@ AppDataSource.initialize().then(async () => {
         })
     )
 
-    console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results")
+    console.log("Express server has started on port 3000. Open http://localhost:3000/recipe to see results")
 
 }).catch(error => console.log(error))

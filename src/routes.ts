@@ -2,7 +2,7 @@ import { RecipeController } from "./controller/RecipeController"
 
 export const Routes = [{
     method: "get",
-    route: "/Recipes",
+    route: "/Recipe",
     controller: RecipeController,
     action: "all"
 }, {
