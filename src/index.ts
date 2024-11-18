@@ -5,6 +5,9 @@ import { AppDataSource } from "./data-source"
 import * as createError from 'http-errors';
 import { Routes } from "./routes"
 import * as cors from 'cors';
+import 'dotenv/config'
+
+
 // cors options
 const corsOptions ={
     origin: /localhost\:\d{4}$/i, // localhost any 4 digit port
