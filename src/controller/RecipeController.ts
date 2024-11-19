@@ -1,6 +1,8 @@
 import { AppDataSource } from "../data-source"
 import { NextFunction, Request, Response } from "express"
 import {Recipe} from "../entity/Recipe";
+import {validate} from "class-validator";
+
 
 export class RecipeController {
 
@@ -18,12 +20,17 @@ export class RecipeController {
             where: { recipeID }
         })
 
-        if (!Recipe) {
+        if (!Recipe) {// If we dont have a recipe return a msg
             return "unregistered Recipe"
         }
         return Recipe
     }
 
+    //This is used for saving recipes to the database, it checks for authed users
+    //  assigns an owner to the recipe
+    //      makes a recipe object
+    //          validates the object
+    //              then saves it
     async save(request: Request, response: Response, next: NextFunction) {
         const { title, uploadDate, calories, estimatedTime, ingredients, steps } = request.body;
 
@@ -42,10 +49,20 @@ export class RecipeController {
             ingredients,
             steps
         })
+        // Validate the user object
+        const violations = await validate(recipe);
+
+        // If there are any violations, return them
+        if (violations.length > 0) {
+            return violations
+        }
 
         return this.recipeRepository.save(recipe)
     }
-
+    //This is used to remove recipes from the database
+    //  find the recipe
+    //      authenticate the user
+    //          and remove the recipe
     async remove(request: Request, response: Response, next: NextFunction) {
         const recipeID = parseInt(request.params.id)
 
@@ -64,6 +81,10 @@ export class RecipeController {
 
         response.json({message: "recipe has been removed"})
     }
+    //This is used to update recipes
+    //  first authenticate the user
+    //      check for violations in the updated object
+    //          save the updates object to the database
     async update(req: Request, res: Response, next: NextFunction) {
         const recipeToUpdate = await this.recipeRepository.preload(req.body);
 
@@ -71,6 +92,13 @@ export class RecipeController {
             res.status(401);
             res.json({message: "Unauthorized: Cannot update other users' recipes"});
             return
+        }
+        // Validate the user object
+        const violations = await validate(recipeToUpdate);
+
+        // If there are any violations, return them
+        if (violations.length > 0) {
+            Response.status(400).json(violations)
         }
 
         return this.recipeRepository.save(recipeToUpdate);
