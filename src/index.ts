@@ -6,6 +6,7 @@ import * as createError from 'http-errors';
 import { Routes } from "./routes"
 import * as cors from 'cors';
 import 'dotenv/config'
+import {authenticate} from "./middleware/authenticate";
 
 
 // cors options
@@ -31,7 +32,10 @@ AppDataSource.initialize().then(async () => {
     app.options('*', cors(corsOptions));
 
     Routes.forEach(route => {
-        (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
+        // check if route needs authentication. If it does then add authenticate middleware
+        const middleware = route.needAuth ? [authenticate] : [];
+                                                // add middleware here with spread operator
+        (app as any)[route.method](route.route, ...middleware , (req: Request, res: Response, next: Function) => {
             const result = (new (route.controller as any))[route.action](req, res, next)
             if (result instanceof Promise) {
                 result.then(result => result !== null && result !== undefined ? res.send(result) : undefined)

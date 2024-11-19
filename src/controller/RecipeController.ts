@@ -25,7 +25,14 @@ export class RecipeController {
     }
 
     async save(request: Request, response: Response, next: NextFunction) {
-        const { title, uploadDate, owner, calories, estimatedTime, ingredients, steps } = request.body;
+        const { title, uploadDate, calories, estimatedTime, ingredients, steps } = request.body;
+
+        if (!request.user) {
+            response.status(401).json({message: "Unauthorized: Must be signed in to create a recipe"})
+            return
+        }
+
+        const owner = request.user.userID
         const recipe = Object.assign(new Recipe(), {
             title,
             uploadDate,
@@ -48,12 +55,23 @@ export class RecipeController {
             return "this recipe doesn't exist"
         }
 
+        if (request.user.userID !== recipeToRemove.owner) {
+            response.status(401).json({message: "Unauthorized: Cannot delete other users' recipes"})
+            return
+        }
+
         await this.recipeRepository.remove(recipeToRemove)
 
-        return "recipe has been removed"
+        response.json({message: "recipe has been removed"})
     }
     async update(req: Request, res: Response, next: NextFunction) {
         const recipeToUpdate = await this.recipeRepository.preload(req.body);
+
+        if (recipeToUpdate.owner !== req.user.userID) {
+            res.status(401);
+            res.json({message: "Unauthorized: Cannot update other users' recipes"});
+            return
+        }
 
         return this.recipeRepository.save(recipeToUpdate);
     }
